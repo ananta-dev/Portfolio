@@ -1,9 +1,9 @@
 import { useState } from "react";
-
 import { images } from "../../constants";
 import { AppWrap, MotionWrap } from "../../wrapper";
 import { client } from "../../client";
 import "./Footer.scss";
+import emailjs from "@emailjs/browser";
 
 const Footer = () => {
     const [formData, setFormData] = useState({
@@ -19,6 +19,23 @@ const Footer = () => {
     const handleChangeInput = e => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+    };
+
+    const sendEmail = async () => {
+        const templateParams = {
+            to_name: "Juanjo",
+            email: formData.email,
+            message: formData.message,
+            from_name: formData.username,
+            reply_to: formData.email,
+        };
+
+        emailjs.send(
+            process.env.REACT_APP_EMAILJS_SERVICE_ID,
+            process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
+            templateParams,
+            process.env.REACT_APP_EMAILJS_PUBLIC_KEY
+        );
     };
 
     const handleSubmit = () => {
@@ -37,7 +54,15 @@ const Footer = () => {
                 setLoading(false);
                 setIsFormSubmitted(true);
             })
-            .catch(err => console.log(err));
+            .catch(err =>
+                console.log("Error creating contact in Sanity: ", err)
+            );
+
+        // prettier-ignore
+        sendEmail()
+            .catch(error => {
+                console.log("SendEmail failed. Error: ", error);
+            });
     };
 
     return (
