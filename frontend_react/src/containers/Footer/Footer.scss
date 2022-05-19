@@ -121,6 +121,11 @@
         &:hover {
             background-color: #2430af;
         }
+
+        &:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
     }
 
     @media screen and (max-width: 768px) {

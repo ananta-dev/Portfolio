@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { images } from "../../constants";
 import { AppWrap, MotionWrap } from "../../wrapper";
 import { client } from "../../client";
 import "./Footer.scss";
-import emailjs from "@emailjs/browser";
+// import emailjs from "@emailjs/browser";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const Footer = () => {
     const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const Footer = () => {
     });
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [disableSubmit, setDisableSubmit] = useState(true);
 
     const { username, email, message } = formData;
 
@@ -30,12 +32,15 @@ const Footer = () => {
             reply_to: formData.email,
         };
 
-        emailjs.send(
-            process.env.REACT_APP_EMAILJS_SERVICE_ID,
-            process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
-            templateParams,
-            process.env.REACT_APP_EMAILJS_PUBLIC_KEY
-        );
+        console.log("[simulating] Sending email with: ");
+        console.log({ templateParams });
+
+        // emailjs.send(
+        //     process.env.REACT_APP_EMAILJS_SERVICE_ID,
+        //     process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
+        //     templateParams,
+        //     process.env.REACT_APP_EMAILJS_PUBLIC_KEY
+        // );
     };
 
     const handleSubmit = () => {
@@ -114,10 +119,17 @@ const Footer = () => {
                             onChange={handleChangeInput}
                         />
                     </div>
+
+                    <ReCAPTCHA
+                        sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+                        onChange={() => setDisableSubmit(false)}
+                    />
+
                     <button
                         type='button'
                         className='p-text'
                         onClick={handleSubmit}
+                        disabled={disableSubmit}
                     >
                         {!loading ? "Send Message" : "Sending..."}
                     </button>

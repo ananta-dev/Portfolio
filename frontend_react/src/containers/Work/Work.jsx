@@ -36,8 +36,6 @@ const Work = () => {
         }, 500);
     };
 
-    console.log({ works });
-
     return (
         <>
             <h2 className='head-text'>
